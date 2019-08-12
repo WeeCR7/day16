@@ -1,0 +1,13 @@
+package cn.bgi.test;
+
+public class StudentDao {
+	public static void main(String[] args) {
+		//增
+		Db.use().insert(
+			    Entity.create("user")
+			    .set("name", "unitTestUser")
+			    .set("age", 66)
+			);
+	}
+
+}

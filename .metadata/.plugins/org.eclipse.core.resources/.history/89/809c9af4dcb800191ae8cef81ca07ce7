@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.bgi.mapper.UserMapper">
+
+	<resultMap type="cn.bgi.pojo.User" id="UserResultMap">
+		<id property="u_id" column="u_id" />
+		<result property="username" column="username" />
+		<result property="password" column="password" />
+		<result property="authority" column="authority" />
+	</resultMap>
+
+	<resultMap type="cn.bgi.pojo.UserInfo" id="userInfoResultMap">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="sex" column="sex" />
+		<result property="e_mail" column="e_mail" />
+		<result property="photo" column="photo" />
+		<result property="u_id" column="u_id" />
+		<association property="user" javaType="cn.bgi.pojo.User">
+			<id column="u_id" property="u_id" />
+			<result column="username" property="username" />
+			<result column="password" property="password" />
+			<result column="authority" property="authority" />
+		</association>
+
+	</resultMap>
+
+	<!--查询用户信息 -->
+	<select id="findUserInfo" resultMap="userInfoResultMap">
+		select id,name,sex,e_mail,photo,username,password from
+		t_user,t_userinfo where t_user.u_id = t_userinfo.u_id
+		<if test="_parameter!= null">
+			AND name like concat(concat('%',#{_parameter},'%'))
+		</if>
+	</select>
+	<!-- 进行分页 -->
+	<select id="findUserInfoByPage"
+		parameterType="cn.bgi.pojo.Pagination" resultMap="userInfoResultMap"
+		resultType="Object">
+		select
+		id,name,sex,e_mail,photo,username,password from
+		t_user,t_userinfo where
+		t_user.u_id = t_userinfo.u_id limit
+		#{arg0},#{arg1}
+	</select>
+	<!-- 统计所有用户信息 -->
+	<select id="findAllUserInfo"
+		parameterType="cn.bgi.pojo.Pagination" resultType="Integer">
+		select count(id)
+		from t_userinfo
+	</select>
+
+	<!-- 登录验证 -->
+	<select id="findUser" resultType="cn.bgi.pojo.User">
+		select * from t_user where
+		username = #{username} and password = #{password}
+	</select>
+
+	<select id="findUserByUserName" resultType="cn.bgi.pojo.User"
+		parameterType="cn.bgi.pojo.User">
+		select * from t_user where username = #{username}
+	</select>
+	
+	<select id="countUserIdByName" resultType="Integer">
+		select count(u_id) from t_user where username = #{username}
+	</select>
+
+	<insert id="insertUser" parameterType="cn.bgi.pojo.User">
+		insert into
+		t_user(username,password,authority)
+		values(#{username},#{password},#{authority})
+	</insert>
+
+	<!-- 删除用户 -->
+	<delete id="deleteUser" parameterType="cn.bgi.pojo.UserInfo">
+		delete t_userinfo,t_user from t_user left join t_userinfo on
+		t_user.u_id = t_userinfo.u_id
+		<where>
+			<if test="_parameter!= null">
+				and t_userinfo.id = #{_parameter}
+			</if>
+		</where>
+	</delete>
+
+	<!--插入用户信息 -->
+	<insert id="insertUserInfo" parameterType="cn.bgi.pojo.UserInfo">
+		insert into
+		t_userinfo(name,sex,e_mail,photo,u_id)
+		values(#{name},#{sex},#{e_mail},#{photo},#{u_id})
+	</insert>
+
+	<!-- 查找个人信息 -->
+	<select id="findPersonInfoById" resultMap="userInfoResultMap">
+		select
+		id,name,sex,e_mail,photo,username,password,t_user.u_id,authority from
+		t_user,t_userinfo where t_user.u_id = t_userinfo.u_id and t_user.u_id
+		= #{u_id}
+	</select>
+
+	<!-- 更新个人信息 -->
+	<update id="updatePersonInfo"
+		parameterType="cn.bgi.pojo.UserInfo">
+		update t_userinfo set
+		name=#{name},sex=#{sex},e_mail=#{e_mail},photo=#{photo} where u_id =
+		#{u_id}
+	</update>
+
+	<!-- 修改用户名和密码 -->
+	<update id="updatePWD" parameterType="cn.bgi.pojo.User">
+		update t_user set
+		username=#{username},password=#{password} where u_id =
+		#{u_id}
+	</update>
+
+</mapper>

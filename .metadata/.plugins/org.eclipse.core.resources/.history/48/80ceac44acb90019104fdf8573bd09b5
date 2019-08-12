@@ -1,0 +1,4 @@
+message.fileSize=4194304
+message.upPath=D:\\upload
+message.scaleRatio=0.20f
+message.imageType=png,jpg,jpeg

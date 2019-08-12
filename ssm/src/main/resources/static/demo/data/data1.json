@@ -1,0 +1,28 @@
+[
+	{
+		"id":0,
+		"text":"请选择省份",
+		"country":[
+		  {"id":"01","text":"请选择城市","selected":true}
+		]
+	},
+	{
+	"id":1,
+	"text":"湖北",
+	"country":[
+      {"id":"11","text":"武汉","selected":true},
+      {"id":"12","text":"孝感"},
+	  {"id":"13","text":"黄石"}
+    ]
+
+},
+{
+	"id":2,
+	"text":"广东",
+	"country":[
+	  {"id":"21","text":"广州","selected":true},
+	  {"id":"22","text":"东莞"},
+	  {"id":"23","text":"惠州"}
+	]
+}
+]

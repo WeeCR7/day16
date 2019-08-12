@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style type="text/css">
+			#fm {
+				margin: 0;
+				padding: 10px 30px;
+			}
+
+			.ftitle {
+				font-size: 14px;
+				font-weight: bold;
+				padding: 5px 0;
+				margin-bottom: 10px;
+				border-bottom: 1px solid #ccc;
+			}
+
+			.fitem {
+				margin-bottom: 5px;
+			}
+
+			.fitem label {
+				display: inline-block;
+				width: 80px;
+			}
+
+			.fitem input {
+				width: 160px;
+			}
+		</style>
+		<meta charset="utf-8">
+		<title>用户信息表</title>
+		<link rel="stylesheet" type="text/css" href="easyui_lib/themes/default/easyui.css" />
+		<link rel="stylesheet" type="text/css" href="easyui_lib/themes/icon.css" />
+		<link rel="stylesheet" type="text/css" href="easyui_lib/themes/color.css" />
+		<link rel="stylesheet" type="text/css" href="easyui_lib/demo/demo.css" />
+		<script src="easyui_lib/jquery.min.js"></script>
+		<script src="easyui_lib/jquery.easyui.min.js"></script>
+		<script src="easyui_lib/locale/easyui-lang-zh_CN.js"></script>
+		<script type="text/javascript" src="datagrid-transposedview.js"></script>
+		<script>
+			var url; //保存或更新地址
+
+			$(function() {
+				$("#dg").datagrid({
+					showHeader: true,
+					view: transposedview,
+					headerWidth: 180,
+					itemWidth: 200,
+					title: '个人信息',
+					url:"/user/personInfo?u_id=${u_id}",
+					singleSelect: true,
+					nowrap: false,
+					columns: [
+						[{
+								field: 'u_id',
+								title: '用户ID',
+								width: 100,
+								align: 'center',
+							},
+							{	field:'photo',
+								title:'头像',
+								formatter:showPhoto,
+								align:'center',
+								styler : function(value,row,index){
+					                return 'height:100px';
+					        }
+								
+							},
+							{
+								field: 'name',
+								title: '姓名',
+								width: 100,
+								align: 'center',
+							},
+							{
+								field: 'sex',
+								title: '性别',
+								width: 100,
+								align: 'center',
+								formatter: function(value, row, index) {
+									if (value == "0") {
+										return value = "男";
+									}
+									if (value == "1") {
+										return value = "女";
+									}
+									return value;
+								}
+							},
+							{
+								field: 'e_mail',
+								title: '邮箱',
+								width: 100,
+								align: 'center',
+							}, {
+								field: 'username',
+								title: '用户名',
+								width: 100,
+								align: 'center',
+								formatter: function(value, row, rowIndex) {
+									if (row.user != undefined) {
+										return row.user.username;
+									}
+								}
+							},
+							{
+								field: 'password',
+								title: '密码',
+								width: 100,
+								align: 'center',
+								formatter: function(value, row, rowIndex) { //解决嵌套查询，数据在datagrid中显示问题
+									if (row.user != undefined) {
+										return row.user.password;
+									}
+								}
+							}
+						]
+					]
+				})
+			});
+			//显示图像
+			function showPhoto(value,row,index){
+				console.log(value);
+				if(value){
+					return "<img src='http://localhost:8070/upload/"+value+"' style='width:80px;height:100px'/>"
+				}else{
+					return null;
+				}
+			};
+			function updateUserInfo() {
+				$('#dlg').dialog('open').dialog('setTitle', '修改个人信息');
+			};
+			function updateNP() {
+				$('#NP').dialog('open').dialog('setTitle', '修改密码');
+			};
+			
+			function save(){
+				$('#fm').form('submit', {
+					url:'/user/updatePersonInfo', //保存地址
+					onSubmit: function() {
+						return $(this).form('validate');
+					},
+					success: function(result) {
+						var result = eval('(' + result + ')');
+						if (result.errorMsg) {
+							$.messager.show({
+								title: 'Error',
+								msg: result.errorMsg
+							});
+						} else {
+							$('#dlg').dialog('close'); // close the dialog
+							alert('确认提交信息吗？');
+							window.location.href="personInfo.jsp";
+						}
+					}
+				});
+			};
+			function saveNP(){
+				$('#pwdfm').form('submit', {
+					url:'/user/updatePwd', //保存地址
+					onSubmit: function() {
+						return $(this).form('validate');
+					},
+					success: function(result) {
+						var result = eval('(' + result + ')');
+						if (result) {				
+							$('#NP').dialog('close'); // close the dialog
+							alert('确认提交信息吗？');
+							alert('请重新登录！');
+							top.location="login.html";
+						} else {
+							$.messager.show({
+								title: 'Error',
+								msg: '该用户名已被使用，请重新输入用户名'
+							});
+						}
+					}
+				});
+			}
+		</script>
+	</head>
+	<body>
+	
+		<div id="" style="padding: 10px; background-color: lightgray;">
+			<a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="updateUserInfo()">修改个人信息</a>
+			<a href="#" onclick="updateNP()">修改密码</a>
+		</div>
+		<!--修改个人信息-->
+		<div id="dlg" class="easyui-dialog" style="width:400px;height:280px;padding:10px 20px" closed="true" buttons="#dlg-buttons">
+			<div class="ftitle">更新信息</div>
+			<form id="fm" method="post" enctype="multipart/form-data">
+				<div class="fitem">
+					<label>用户ID:</label>
+					<input name="u_id" id="u_id" readonly="true" value="${session.u_id}" class="easyui-validatebox">
+				</div>
+				<div class="fitem">
+					<label>姓&nbsp;&nbsp;&nbsp;名:</label>
+					<input name="name" id="name" class="easyui-validatebox">
+				</div>
+				<div class="fitem">
+					<label>性&nbsp;&nbsp;&nbsp;别:</label>
+					<input name="sex" id="sex" class="easyui-validatebox">
+				</div>
+				<div class="fitem">
+					<label>邮&nbsp;&nbsp;&nbsp;箱:</label>
+					<input name="e_mail" id="e_mail" class="easyui-validatebox" data-options="validType:'email'">
+				</div>				
+				<div class="fitem">
+					<label>头&nbsp;&nbsp;&nbsp;像:</label>
+					<input name="photo" id="photo" class="easyui-filebox">
+				</div>
+			</form>
+		</div>
+		<div id="dlg-buttons">
+			<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="save()">Save</a>
+			<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">Cancel</a>
+		</div>
+		
+		<!-- 修改用户名和密码 -->
+		<div id="NP" class="easyui-dialog" style="width:400px;height:280px;padding:10px 20px" closed="true" buttons="#dlg-buttons">
+			<div class="ftitle">修改密码</div>
+			<form id="pwdfm" method="post">
+				<div class="fitem">
+					<label>用户ID:</label>
+					<input name="u_id" id="u_id" readonly="true" value="${u_id}" class="easyui-validatebox">
+				</div>
+				<div class="fitem">
+					<label>用户名:</label>
+					<input name="username" id="username" class="easyui-validatebox">
+				</div>
+				<div class="fitem">
+					<label>密&nbsp;&nbsp;&nbsp;码:</label>
+					<input name="password" id="password" class="easyui-validatebox">
+				</div>
+			</form>
+		</div>
+		<div id="dlg-buttons">
+			<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="saveNP()">Save</a>
+			<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#NP').dialog('close')">Cancel</a>
+		</div>
+
+		<table id="dg">
+		</table>
+	</body>
+</html>

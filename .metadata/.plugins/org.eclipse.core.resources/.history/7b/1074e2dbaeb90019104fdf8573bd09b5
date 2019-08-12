@@ -1,0 +1,10 @@
+server:
+  port: 8070
+spring:  datasource:    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/ssm?characterEncoding=UTF-8&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+    username: root
+    password: password  mvc:    view:      prefix: /demo/      suffix: .html    static-path-pattern: /**  resources:    static-locations:    - classpath:/D:/upload
+mybatis:  config-location: classpath:mybatis.xml
+  mapper-locations:  - classpath*:cn/bgi/mapper/*.xml
+  
+    

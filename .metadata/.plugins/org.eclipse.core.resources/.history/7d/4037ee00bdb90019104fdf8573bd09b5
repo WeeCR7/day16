@@ -1,0 +1,27 @@
+package cn.bgi.controller;
+
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+
+@ComponentScan
+@Configuration
+public class MyWebMvcConfigurer implements WebMvcConfigurer {
+
+	/**
+	 * 配置静态资源映射
+	 *
+	 * @param registry
+	 */
+	@Autowired
+    PreReadUploadConfig uploadConfig;
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/static/**").addResourceLocations("file:///"+uploadConfig.getUploadPath());
+    }
+--------------------- 
+版权声明：本文为CSDN博主「Snow、杨」的原创文章，遵循CC 4.0 by-sa版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/qq_37345604/article/details/89378187
+}

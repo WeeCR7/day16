@@ -1,0 +1,25 @@
+
+{"total":3,
+"rows":[{
+	"eno":"1001",
+	"username":"zhanjiawei",
+	"ename":"占佳伟",
+	"sex":"男",
+	"first":"广东",
+	"second":"广州"
+},{
+	"eno":"1002",
+	"username":"zhangsan",
+	"ename":"张三",
+	"sex":"男",
+	"first":"湖北",
+	"second":"武汉"
+},{
+	"eno":"1003",
+	"username":"lisi",
+	"ename":"李四",
+	"sex":"女",
+	"first":"湖北",
+	"second":"孝感"
+}]
+}

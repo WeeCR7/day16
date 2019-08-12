@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>登录界面</title>
+		<script src="easyui_lib/jquery.min.js"></script>
+		<script src="easyui_lib/jquery.easyui.min.js"></script>
+		<script src="easyui_lib/jquery.edatagrid.js"></script>
+		<script src="easyui_lib/locale/easyui-lang-zh_CN.js"></script>
+		<link rel="stylesheet" type="text/css" href="easyui_lib/themes/default/easyui.css" />
+		<link rel="stylesheet" type="text/css" href="easyui_lib/themes/icon.css" />
+		<style type="text/css">
+			body {
+				background: url("img/bg.jpg") no-repeat;
+				height: 100%;
+				width: 100%;
+				overflow: hidden;
+				background-size: cover;
+			}
+		</style>
+		<script>	
+			
+				/* $('#ff').form('submit',{
+					url:'/ssm/user/login.do',
+					onSubmit:function(){
+						
+					},
+					success:function(data){
+					var jsonData = $.parseJSON(data);//$.parseJSON()将json数据转化为对象
+					$.messager.alert("消息",jsonData.message);//从后台返回消息
+					}
+				}) */
+				function t_submit(){
+					var name =$("#username").val();
+		            var pwd =$("#password").val();
+		            if(name==""){
+		            	$.messager.alert('提示','用户名不能为空!');
+		                return false;
+		            }
+		            else if(pwd==" "){
+		            	$.messager.alert('提示','密码不能为空!');
+		                return false;
+		            }
+		            else
+		            {
+		            $.ajax({
+		                type:'post',
+		                url:'/ssm/user/login.do',
+		                dataType:"json",
+		                data:{username:name,password:pwd},
+		                success:function(data){
+		                	//console.log(data);
+		                   if(data.rows[0].result){
+		                	   alert("登录成功")
+		                	   //console.log(data.rows[0].aut);
+		                	   //根据权限的不同，跳转到不同的页面
+		                	   if(!data.rows[0].aut){
+		                       window.location.href ="s_main.html";
+		                	   }else{
+		                	   window.location.href ="main.jsp";
+		                	   }
+		                   }
+		                   else{
+		                	   $.messager.alert('错误', "用户名或者密码错误！"); 
+		                   }
+		                }
+		            });
+		           }
+					
+				}
+			function clearForm(){
+				$('#ff').form('clear');
+			}
+		</script>
+	</head>
+	<body>
+		<div class="easyui-panel" style="width:400px; height:450px;position: absolute; right: 20%; top:30%;background-color:#EAEAEA">
+			<div style="padding:20% 60px 20px 60px">
+				<header class="mui-bar mui-bar-nav">
+					<h1 class="mui-title">管理员登录</h1>
+				</header>
+				<form id="ff" method="post">
+					<table cellpadding="5">
+						<tr>
+							<td><label for="name">用户名:</label></td>
+							<td><input class="easyui-textbox" type="text" prompt="username"id="username" name="username" style="width:100%;padding:10px"></input></td>
+						</tr>
+						<tr>
+							<td><label for="password">密&nbsp;&nbsp;&nbsp;码:</label></td>
+							<td><input class="easyui-passwordbox" prompt="password"id="password" name = "password" iconWidth="28" style="width:100%;padding:10px"></input></td>
+						</tr>
+					</table>
+					<div style="text-align:center;padding:50px">
+					<input  type="button" onclick="t_submit()"  value="登录" class="easyui-linkbutton" style="width:70px;height:35px"/>
+					<input  type="button"  value="取消"class="easyui-linkbutton" onclick="clearForm()" style="width:70px;height:35px"/>
+					</div>
+				</form>
+			</div>
+		</div>
+	</body>
+</html>

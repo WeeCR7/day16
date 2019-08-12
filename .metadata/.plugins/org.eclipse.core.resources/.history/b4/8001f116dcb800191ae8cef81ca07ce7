@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>员工信息表</title>
+		<script src="easyui_lib/jquery.min.js"></script>
+		<script src="easyui_lib/jquery.easyui.min.js"></script>
+		<script src="easyui_lib/jquery.edatagrid.js"></script>
+		<script src="easyui_lib/locale/easyui-lang-zh_CN.js"></script>
+		<link rel="stylesheet" type="text/css" href="easyui_lib/themes/default/easyui.css" />
+		<link rel="stylesheet" type="text/css" href="easyui_lib/themes/icon.css" />
+		<script>
+			var rowindex = 0;
+			var btn_click_insert = false;
+			var btn_click_update = false;
+			$(function() {
+				$("#dg").edatagrid({
+					method: 'get',
+					url: '/ssm/employee/get.do',
+					//updateUrl: '/ssm/employee/update.do',
+					idField: 'eno',
+					pagination: true,
+					pageSize: 3,
+					pageList: [3, 6, 12],
+					columns: [
+						[{
+								field: 'eno',
+								title: '工号',
+								width: 100,
+								align: 'center',
+								halign: 'center',
+								editor: {
+									type: 'easyui-validatebox'
+								}
+							},
+							{
+								field: 'username',
+								title: '用户名',
+								width: 100,
+								align: 'center',
+								halign: 'center',
+								editor: {
+									type: 'easyui-validatebox',
+									options: {
+										required: true
+									}
+								}
+							},
+							{
+								field: 'ename',
+								title: '真实姓名',
+								width: 100,
+								align: 'center',
+								halign: 'center',
+								editor: {
+									type: 'easyui-validatebox',
+									options: {
+										required: true,
+										validType: ['myvalid', 'length[2,4]']
+									}
+								}
+							},
+							{
+								field: 'sex',
+								title: '性别',
+								width: 100,
+								align: 'center',
+								halign: 'center',
+								formatter: function(value, row, index) {
+									if (value == "0") {
+										return value = "男";
+									}
+									if (value == "1") {
+										return value = "女";
+									}
+									return value;
+								},
+								editor: {
+									type: 'easyui-validatebox'
+								}
+							},
+							{
+								field: 'first',
+								title: '一级',
+								width: 100,
+								align: 'center',
+								halign: 'center',
+								formatter: function(value, row, index) {
+									if (value == "0") {
+										return value = "请选择省份";
+									}
+									if (value == "1") {
+										return value = "湖北";
+									}
+									if (value == "2") {
+										return value = "广东";
+									}
+									return value;
+								},
+								editor: {
+									type: 'easyui-validatebox'
+									}
+							}, {
+								field: 'second',
+								title: '二级',
+								width: 100,
+								align: 'center',
+								halign: 'center',
+								formatter: function(value, row, index) {
+									if (value == "01") {
+										return value = "请选择城市";
+									}
+									if (value == "11") {
+										return value = "武汉";
+									}
+									if (value == "12") {
+										return value = "孝感";
+									}
+									if (value == "13") {
+										return value = "黄石";
+									}
+									if (value == "21") {
+										return value = "广州";
+									}
+									if (value == "22") {
+										return value = "东莞";
+									}
+									if (value == "23") {
+										return value = "惠州";
+									}
+									return value;
+								},
+								editor: {
+									type: 'easyui-validatebox'
+								}
+							}
+						]
+					],
+					onAfterEdit: function(rowIndex, rowData, changes) {
+						console.log(rowData);
+						insertAndUpdate(rowData);
+					},
+					onBeforeEdit: function(rowIndex, rowData) {
+						rowindex = rowIndex;
+					}
+				})
+			})
+
+			function remove() {
+				var row = $('#dg').datagrid('getSelected');
+				if (row) {
+					$.messager.confirm('Confirm', '你要删除这条数据吗？', function(r) {
+						if (r) {
+							$.ajax({
+								type: 'POST',
+								url: '/ssm/employee/delete.do?eno=' +
+									row.eno,
+								success: function(result) {
+									if (result) {
+										alert('删除成功！');
+										$('#dg').datagrid('reload')
+									} else {
+										alert('删除失败');
+									}
+								}
+							});
+						}
+					});
+				}
+			};
+
+			function doSearch(pageNumber, pageSize) {
+				$('#dg').datagrid('load', {
+					'ename': $('#search').val()
+
+				});
+			}
+
+			function reset() {
+				$('#dg').datagrid('reload', {});
+			};
+
+		</script>
+	</head>
+	<body>
+
+		<!--查询选项卡-->
+		<div title="编辑员工" style="padding:10px;" data-options="closable:true">
+			<div id="" style="padding: 10px; background-color: lightgray;">
+				<a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="remove()">delete</a>
+				<a href="#" class="easyui-linkbutton" iconCls="icon-undo" plain="true" onclick="javascript:$('#dg').edatagrid('cancelRow')">Cancel</a>
+				<a href="#" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="reset()">Reset</a>
+				<label><B>根据真实姓名搜索</B></label>
+				<input id="search" class="easyui-textbox" />
+				<a href="#" class="easyui-linkbutton" iconCls="icon-search" plain="true" onclick="doSearch()">Search</a>
+			</div>
+			<table id="dg">
+			</table>
+	</body>
+</html>

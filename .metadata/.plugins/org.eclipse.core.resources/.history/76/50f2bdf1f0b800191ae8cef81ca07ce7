@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>员工信息表</title>
+		<script src="easyui_lib/jquery.min.js"></script>
+		<script src="easyui_lib/jquery.easyui.min.js"></script>
+		<script src="easyui_lib/jquery.edatagrid.js"></script>
+		<script src="easyui_lib/locale/easyui-lang-zh_CN.js"></script>
+		<link rel="stylesheet" type="text/css" href="easyui_lib/themes/default/easyui.css" />
+		<link rel="stylesheet" type="text/css" href="easyui_lib/themes/icon.css" />
+		<script>
+			$(function() {
+				$('#et').tree({
+					onClick:function(node){
+						var url;
+						if(node.text=='更新员工信息'){
+							url = 'update.html';
+						}			
+						if(node.text=='增加员工'){
+							url = 'insert.html';
+						}
+						if(node.text=='删除员工'){
+							url = 'delete.html';
+						}
+						var bol = $('#tbs').tabs('exists',node.text);
+						var content = '<iframe src="'+url+'"  scrolling="no" frameborder="0" style="width:100%;height:100%;"></iframe>';
+						if(bol){
+							$('#tbs').tabs('select',node.text);
+						}else{
+							$('#tbs').tabs('add',{
+								title:node.text,
+								content:content,
+								closable:true
+							})
+						}
+					}
+				});
+				
+				
+				$('#userInfo_et').tree({
+					onClick:function(node){
+						var url;
+						if(node.text=='个人信息'){
+							url = 'personInfo.jsp';
+						}			
+						if(node.text=='完善个人信息'){
+							url = 'InsertPersonInfo.html';
+						}
+						var bol = $('#tbs').tabs('exists',node.text);
+						var content = '<iframe src="'+url+'"  scrolling="no" frameborder="0" style="width:100%;height:100%;"></iframe>';
+						if(bol){
+							$('#tbs').tabs('select',node.text);
+						}else{
+							$('#tbs').tabs('add',{
+								title:node.text,
+								content:content,
+								closable:true
+							})
+						}
+					}
+				});
+				
+				$('#et_1').tree({
+					onClick:function(node){
+						var url = 'https://www.baidu.com';
+						var bol = $('#tbs').tabs('exists',node.text);
+						var content = '<iframe src="'+url+'"   frameborder="0" style="width:100%;height:100%;"></iframe>';
+						if(bol){
+							$('#tbs').tabs('select',node.text);
+						}else{
+							$('#tbs').tabs('add',{
+								title:node.text,
+								content:content,
+								closable:true
+							})
+						}
+					}
+				})
+			});
+			function ck(){
+				alert("你确定注销？");
+			}
+		</script>
+	</head>
+	<body class="easyui-layout">
+		<div data-options="region:'north',split:false" style="height:150px;background-image: url(img/header.jpg);">
+			<font size="7" color="" style="letter-spacing:10px;"><i>员工管理系统</i></font>
+			<div style="text-align: right;padding: 30px;">
+				<span><B><i>欢迎管理员:${username}</i></B></span>
+				<a href="login.html" onclick="ck()">注销</a>
+			</div>
+			
+		</div>
+		<br>
+		<div data-options="region:'west',title:'导航栏',split:true" style="width:200px;">
+
+
+			<!--侧栏菜单-->
+			<div class="easyui-accordion" style="width:200px;height:50%;">
+
+				<div title="员工管理" data-options="iconCls:'icon-sum'" style="overflow:auto;padding:10px;">
+					<ul id="et" class="easyui-tree">
+						<li>更新员工信息</li>
+						<li>增加员工</li>
+						<li>删除员工</li>
+					</ul>
+				</div>
+				
+				<div title="个人信息栏" data-options="iconCls:'icon-man'" style="overflow:auto;padding:10px;">
+					<ul id="userInfo_et" class="easyui-tree">
+						<li>个人信息</li>
+						<li>完善个人信息</li>
+					</ul>
+				</div>
+
+				<div title="友情链接" data-options="iconCls:'icon-more'" style="padding:10px;">
+					<ul id="et_1" class="easyui-tree">
+						<li>百度</li>
+					</ul>
+				</div>
+			</div>
+
+
+		</div>
+		<div data-options="region:'center',title:'管理员界面'" style="padding:5px;background:#eee;">
+			<!--选项卡-->
+			<div id="tbs" class="easyui-tabs" style="width:100%;height:100%" data-options="">
+				<div title="welcome" style="padding:10px;display:none;">
+					<font size="4" color=""><i>欢迎来到管理员页面</i></font>
+				</div>
+
+
+				</div>
+
+		</div>
+
+	</body>
+</html>

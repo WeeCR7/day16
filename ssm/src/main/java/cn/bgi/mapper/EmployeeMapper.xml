@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.bgi.mapper.EmployeeMapper">
+
+
+	<insert id="insertEmployee" parameterType="cn.bgi.pojo.Employee">
+		insert into
+		t_employee(eno,username,ename,sex,first,second)
+		values(#{eno},#{username},#{ename},#{sex},#{first},#{second})
+	</insert>
+
+	<select id="findEmployee" resultType="cn.bgi.pojo.Employee">
+		select * from t_employee
+		<where>
+			<if test="_parameter!= null">
+				ename like concat(concat('%',#{_parameter},'%'))
+			</if>
+		</where>
+	</select>
+	
+	<select id="findAllEmployee" parameterType="cn.bgi.pojo.Pagination" resultType="Integer">
+		select count(eno) from t_employee
+	</select>
+	
+	<select id="findEmployeeByPage" parameterType="cn.bgi.pojo.Pagination" resultType="cn.bgi.pojo.Employee">
+		select * from t_employee limit #{page},#{rows}
+	</select>
+	
+	<select id="findEmployeeByName" resultType="cn.bgi.pojo.Employee">
+		select eno from t_employee
+		<where>
+			<if test="_parameter!= null">
+				username = #{username}
+			</if>
+		</where>
+	</select>
+	
+		<select id="countEmployeeByName" resultType="Integer">
+		select count(eno) from t_employee
+		<where>
+			<if test="_parameter!= null">
+				username = #{username}
+			</if>
+		</where>
+	</select>
+
+	<update id="updateEmployee" parameterType="cn.bgi.pojo.Employee">
+		update t_employee set
+		username=#{username},ename=#{ename},sex=#{sex},first=#{first},second=#{second}
+		where eno = #{eno}
+	</update>
+
+	<delete id="deleteEmployee" parameterType="cn.bgi.pojo.Employee">
+		delete from t_employee
+		where eno = #{eno}
+	</delete>
+</mapper>

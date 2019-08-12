@@ -1,0 +1,5 @@
+package cn.bgi.config;
+
+public class MyWebMvcConfig implements  WebMvcConfigurer{
+
+}
